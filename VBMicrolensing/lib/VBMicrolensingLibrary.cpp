@@ -487,7 +487,7 @@ void VBMicrolensing::LoadESPLTable(const char* filename) {
 }
 
 double VBMicrolensing::PSPLMag(double u) {
-	static double u2, u22;
+	thread_local static double u2, u22;
 	u2 = u * u;
 	u22 = u2 + 2;
 	if (astrometry) {
@@ -547,7 +547,7 @@ double VBMicrolensing::ESPLMag(double u, double RSv) {
 }
 
 double VBMicrolensing::ESPLMag2(double u, double rho) {
-	static double Mag, u2, u2_1, u2_2, u2_4, s_u2_4, u6, rho2, quad;
+	thread_local static double Mag, u2, u2_1, u2_2, u2_4, s_u2_4, u6, rho2, quad;
 	int c = 0;
 
 
@@ -715,15 +715,15 @@ double VBMicrolensing::ESPLMagDark(double u, double RSv) {
 
 
 double VBMicrolensing::BinaryMag0(double a1, double q1, double y1v, double y2v, _sols_for_skiplist_curve** Images) {
-	static complex a, q, m1, m2, y;
-	static double av = -1.0, qv = -1.0;
-	static complex  coefs[24], d1, d2, dy, dJ, dz;
-	static double Mag, Ai;
+	thread_local static complex a, q, m1, m2, y;
+	thread_local static double av = -1.0, qv = -1.0;
+	thread_local static complex  coefs[24], d1, d2, dy, dJ, dz;
+	thread_local static double Mag, Ai;
 
-	static _theta* stheta;
-	static _curve* Prov;
-	static _skiplist_curve* Prov2;
-	static _point* scan1, * scan2;
+	thread_local static _theta* stheta;
+	thread_local static _curve* Prov;
+	thread_local static _skiplist_curve* Prov2;
+	thread_local static _point* scan1, * scan2;
 
 	Mag = Ai = -1.0;
 	stheta = new _theta(-1.);
@@ -815,17 +815,17 @@ double VBMicrolensing::BinaryMag0(double a1, double q1, double y1v, double y2v, 
 }
 
 double VBMicrolensing::BinaryMag0(double a1, double q1, double y1v, double y2v) {
-	static _sols_for_skiplist_curve* images;
-	static double mag;
+	thread_local static _sols_for_skiplist_curve* images;
+	thread_local static double mag;
 	mag = BinaryMag0(a1, q1, y1v, y2v, &images);
 	delete images;
 	return mag;
 }
 
 double VBMicrolensing::BinaryMagSafe(double s, double q, double y1v, double y2v, double RS, _sols_for_skiplist_curve** images) {
-	static double Mag, mag1, mag2, RSi, RSo, delta1, delta2, minerr, magbest, deltabest, cerr, starterr;
-	static int NPSsafe;
-	static bool weird;
+	thread_local static double Mag, mag1, mag2, RSi, RSo, delta1, delta2, minerr, magbest, deltabest, cerr, starterr;
+	thread_local static int NPSsafe;
+	thread_local static bool weird;
 	Mag = BinaryMag(s, q, y1v, y2v, RS, Tol, images);
 	RSi = RS;
 	RSo = RS;
@@ -897,22 +897,22 @@ double VBMicrolensing::BinaryMagSafe(double s, double q, double y1v, double y2v,
 }
 
 double VBMicrolensing::BinaryMag(double a1, double q1, double y1v, double y2v, double RSv, double Tol, _sols_for_skiplist_curve** Images) {
-	static complex a, q, m1, m2, y0, y, yc, z, zc;
-	static double av = -1.0, qv = -1.0;
-	static complex coefs[24], d1, d2, dy, dJ, dz;
-	static double thoff = 0.01020304, errbuff;
-	static double Mag, th;
+	thread_local static complex a, q, m1, m2, y0, y, yc, z, zc;
+	thread_local static double av = -1.0, qv = -1.0;
+	thread_local static complex coefs[24], d1, d2, dy, dJ, dz;
+	thread_local static double thoff = 0.01020304, errbuff;
+	thread_local static double Mag, th;
 	////////////////////////////  
-	static double errimage, maxerr, currerr, Magold;
-	static int NPSmax, flag, NPSold, flagbad, flagbadmax = 3;
-	static _curve* Prov;
-	static _skiplist_curve* Prov2;
-	static _point* scan1, * scan2;
-	static _thetas* Thetas;
-	static _theta* stheta, * itheta;
-	static std::minstd_rand engine_start{ std::random_device{}() };
+	thread_local static double errimage, maxerr, currerr, Magold;
+	thread_local static int NPSmax, flag, NPSold, flagbad, flagbadmax = 3;
+	thread_local static _curve* Prov;
+	thread_local static _skiplist_curve* Prov2;
+	thread_local static _point* scan1, * scan2;
+	thread_local static _thetas* Thetas;
+	thread_local static _theta* stheta, * itheta;
+	thread_local static std::minstd_rand engine_start{ std::random_device{}() };
 
-	static _augmented_priority_queue APQ;
+	thread_local static _augmented_priority_queue APQ;
 
 	if (APQ.apq_array.capacity() > 2048)
 	{
@@ -933,7 +933,7 @@ double VBMicrolensing::BinaryMag(double a1, double q1, double y1v, double y2v, d
 	}
 
 #ifdef _PRINT_TIMES
-	static double tim0, tim1;
+	thread_local static double tim0, tim1;
 #endif
 
 	// Initialization of the equation coefficients
@@ -1178,17 +1178,17 @@ double VBMicrolensing::BinaryMag(double a1, double q1, double y1v, double y2v, d
 
 
 double VBMicrolensing::BinaryMag(double a1, double q1, double y1v, double y2v, double RSv, double Tol) {
-	static _sols_for_skiplist_curve* images;
-	static double mag;
+	thread_local static _sols_for_skiplist_curve* images;
+	thread_local static double mag;
 	mag = BinaryMag(a1, q1, y1v, y2v, RSv, Tol, &images);
 	delete images;
 	return mag;
 }
 
 double VBMicrolensing::BinaryMag2(double s, double q, double y1v, double y2v, double rho) {
-	static double Mag, rho2, y2a;//, sms , dy1, dy2;
-	static int c;
-	static _sols_for_skiplist_curve* Images;
+	thread_local static double Mag, rho2, y2a;//, sms , dy1, dy2;
+	thread_local static int c;
+	thread_local static _sols_for_skiplist_curve* Images;
 
 	c = 0;
 
@@ -1215,7 +1215,7 @@ double VBMicrolensing::BinaryMag2(double s, double q, double y1v, double y2v, do
 }
 
 double VBDefaultCumulativeFunction(double cb, double* a1) {
-	static double r2, cr2, scr2, cc;
+	thread_local static double r2, cr2, scr2, cc;
 	r2 = cb * cb;
 	cr2 = 1 - r2;
 	scr2 = sqrt(cr2);
@@ -1224,14 +1224,14 @@ double VBDefaultCumulativeFunction(double cb, double* a1) {
 }
 
 double VBMicrolensing::BinaryMagDark(double a, double q, double y1, double y2, double RSv, double Tolnew) {
-	static double Mag, Magold, Tolv;
-	static double LDastrox1, LDastrox2;
-	static double tc, lc, rc, cb, rb;
-	static int c, flag;
-	static double currerr, maxerr;
-	static annulus* first, * scan, * scan2;
-	static int nannold, totNPS;
-	static _sols_for_skiplist_curve* Images;
+	thread_local static double Mag, Magold, Tolv;
+	thread_local static double LDastrox1, LDastrox2;
+	thread_local static double tc, lc, rc, cb, rb;
+	thread_local static int c, flag;
+	thread_local static double currerr, maxerr;
+	thread_local static annulus* first, * scan, * scan2;
+	thread_local static int nannold, totNPS;
+	thread_local static _sols_for_skiplist_curve* Images;
 
 	Mag = -1.0;
 	Magold = 0.;
@@ -1481,16 +1481,16 @@ void VBMicrolensing::BinaryMagMultiDark(double a, double q, double y1, double y2
 
 
 _curve* VBMicrolensing::NewImages(complex yi, complex* coefs, _theta* theta) {
-	static complex  y, yc, z, zc, J1, J1c, dy, dz, dJ, J2, J3, dza, za2, zb2, zaltc, Jalt, Jaltc, JJalt2;
-	static complex zr[5] = { 0.,0.,0.,0.,0. };
-	static double dlmin = 1.0e-4, dlmax = 1.0e-3, good[5], dJ2, ob2, cq;
-	static int worst1, worst2, worst3, bad, f1, checkJac;
-	static double av = 0.0, m1v = 0.0, disim, disisso;
-	static _curve* Prov;
-	static _point* scan, * prin, * fifth, * left, * right, * center;
+	thread_local static complex  y, yc, z, zc, J1, J1c, dy, dz, dJ, J2, J3, dza, za2, zb2, zaltc, Jalt, Jaltc, JJalt2;
+	thread_local static complex zr[5] = { 0.,0.,0.,0.,0. };
+	thread_local static double dlmin = 1.0e-4, dlmax = 1.0e-3, good[5], dJ2, ob2, cq;
+	thread_local static int worst1, worst2, worst3, bad, f1, checkJac;
+	thread_local static double av = 0.0, m1v = 0.0, disim, disisso;
+	thread_local static _curve* Prov;
+	thread_local static _point* scan, * prin, * fifth, * left, * right, * center;
 
 #ifdef _PRINT_TIMES
-	static double tim0, tim1;
+	thread_local static double tim0, tim1;
 #endif
 
 	y = yi + coefs[11];
@@ -1727,17 +1727,17 @@ _curve* VBMicrolensing::NewImages(complex yi, complex* coefs, _theta* theta) {
 }
 
 void VBMicrolensing::OrderImages(_sols_for_skiplist_curve* Sols, _curve* Newpts) {
-	static double A[5][5];
-	static _skiplist_curve* cprec[5];
-	static _skiplist_curve* cpres[5];
-	static _skiplist_curve* cfoll[5];
-	static _point* scan, * scan2, * isso[2];//*scan3, 
-	static _skiplist_curve* scurve, * scurve2;
+	thread_local static double A[5][5];
+	thread_local static _skiplist_curve* cprec[5];
+	thread_local static _skiplist_curve* cpres[5];
+	thread_local static _skiplist_curve* cfoll[5];
+	thread_local static _point* scan, * scan2, * isso[2];//*scan3, 
+	thread_local static _skiplist_curve* scurve, * scurve2;
 
-	static std::minstd_rand engine{ std::random_device{}() };
+	thread_local static std::minstd_rand engine{ std::random_device{}() };
 
 	_theta* theta;
-	static double th, mi, cmp, cmp2, cmp_2, dx2, avgx2, avgx1, avg2x1, pref, d2x2, dx1, d2x1, avgwedgex1, avgwedgex2, parab1, parab2;
+	thread_local static double th, mi, cmp, cmp2, cmp_2, dx2, avgx2, avgx1, avg2x1, pref, d2x2, dx1, d2x1, avgwedgex1, avgwedgex2, parab1, parab2;
 
 	int nprec = 0, npres, nfoll = 0, issoc[2], ij;
 
@@ -2453,10 +2453,10 @@ void VBMicrolensing::SetMethod(Method Met) {
 }
 
 void VBMicrolensing::SetLensGeometry_spnp(int nn, double* q, complex* s) {
-	static double sumq, qmin, Jac;
-	static int iqmin, dg;
-	static complex pbin[2], z, S2, fac;
-	static int i, j;
+	thread_local static double sumq, qmin, Jac;
+	thread_local static int iqmin, dg;
+	thread_local static complex pbin[2], z, S2, fac;
+	thread_local static int i, j;
 
 	change_n(nn);
 
@@ -2517,9 +2517,9 @@ void VBMicrolensing::SetLensGeometry_spnp(int nn, double* q, complex* s) {
 }
 
 void VBMicrolensing::SetLensGeometry_multipoly(int nn, double* q, complex* s) {
-	static int j, i, x, k, p, dg;
-	static double tempq, sumq;
-	static complex temps, pbin[2];
+	thread_local static int j, i, x, k, p, dg;
+	thread_local static double tempq, sumq;
+	thread_local static complex temps, pbin[2];
 
 	change_n_mp(nn);
 
@@ -2634,11 +2634,11 @@ void VBMicrolensing::SetLensGeometry_multipoly(int nn, double* q, complex* s) {
     }
 
 double VBMicrolensing::MultiMag0(double y1s, double y2s, _sols_for_skiplist_curve** Images) {
-	static double Mag = -1.0, Ai;
+	thread_local static double Mag = -1.0, Ai;
 	complex yi;
 	_theta* stheta;
-	static _curve* Prov;
-	static _skiplist_curve* Prov2;
+	thread_local static _curve* Prov;
+	thread_local static _skiplist_curve* Prov2;
 	_point* scan1, * scan2;
 
 	stheta = new _theta(-1.);
@@ -2684,8 +2684,8 @@ double VBMicrolensing::MultiMag0(double y1s, double y2s, _sols_for_skiplist_curv
 }
 
 double VBMicrolensing::MultiMag0(double y1s, double y2s) {
-	static _sols_for_skiplist_curve* images;
-	static double mag;
+	thread_local static _sols_for_skiplist_curve* images;
+	thread_local static double mag;
 	mag = MultiMag0(y1s, y2s, &images);
 	delete images;
 	return mag;
@@ -2693,23 +2693,23 @@ double VBMicrolensing::MultiMag0(double y1s, double y2s) {
 
 
 double VBMicrolensing::MultiMag(double y1s, double y2s, double RSv, double Tol, _sols_for_skiplist_curve** Images) {
-	static complex y0, yi;
-	static double Mag = -1.0, th, thoff, thoff2 = 0.7956012033974483; //0.01020304
-	static double errimage, maxerr, currerr, Magold, rhorad2, th2, errbuff;
-	static int NPSmax, flag, NPSold, isquare, flagfinal, flagbad, flagbadmax = 3;
-	static _thetas* Thetas;
-	static _theta* stheta, * itheta, * jtheta;
-	static _curve* Prov;
-	static _skiplist_curve* Prov2;
-	static _point* scan1, * scan2;
-	static int lsquares[4];
+	thread_local static complex y0, yi;
+	thread_local static double Mag = -1.0, th, thoff, thoff2 = 0.7956012033974483; //0.01020304
+	thread_local static double errimage, maxerr, currerr, Magold, rhorad2, th2, errbuff;
+	thread_local static int NPSmax, flag, NPSold, isquare, flagfinal, flagbad, flagbadmax = 3;
+	thread_local static _thetas* Thetas;
+	thread_local static _theta* stheta, * itheta, * jtheta;
+	thread_local static _curve* Prov;
+	thread_local static _skiplist_curve* Prov2;
+	thread_local static _point* scan1, * scan2;
+	thread_local static int lsquares[4];
 
 	flagbad = 0;
 	thoff = 0.01020304;
 	yi = complex(y1s, y2s);
-	static std::minstd_rand engine_start{ std::random_device{}() };
+	thread_local static std::minstd_rand engine_start{ std::random_device{}() };
 
-	static _augmented_priority_queue APQ;
+	thread_local static _augmented_priority_queue APQ;
 
 	if (APQ.apq_array.capacity() > 2048)
 	{
@@ -3002,25 +3002,25 @@ double VBMicrolensing::MultiMag(double y1s, double y2s, double RSv, double Tol, 
 }
 
 double VBMicrolensing::MultiMag(double y1s, double y2s, double RSv) {
-	static _sols_for_skiplist_curve* images;
-	static double mag;
+	thread_local static _sols_for_skiplist_curve* images;
+	thread_local static double mag;
 	mag = MultiMag(y1s, y2s, RSv, Tol, &images);
 	delete images;
 	return mag;
 }
 
 double VBMicrolensing::MultiMag(double y1s, double y2s, double RSv, double Tol) {
-	static _sols_for_skiplist_curve* images;
-	static double mag;
+	thread_local static _sols_for_skiplist_curve* images;
+	thread_local static double mag;
 	mag = MultiMag(y1s, y2s, RSv, Tol, &images);
 	delete images;
 	return mag;
 }
 
 double VBMicrolensing::MultiMagSafe(double y1s, double y2s, double RS, _sols_for_skiplist_curve** images) {
-	static double Mag, mag1, mag2, RSi, RSo, delta1, delta2, minerr, magbest, deltabest, cerr, starterr;
-	static int NPSsafe;
-	static bool weird;
+	thread_local static double Mag, mag1, mag2, RSi, RSo, delta1, delta2, minerr, magbest, deltabest, cerr, starterr;
+	thread_local static int NPSsafe;
+	thread_local static bool weird;
 	Mag = MultiMag(y1s, y2s, RS, Tol, images);
 	RSi = RS;
 	RSo = RS;
@@ -3091,14 +3091,14 @@ double VBMicrolensing::MultiMagSafe(double y1s, double y2s, double RS, _sols_for
 }
 
 double VBMicrolensing::MultiMagDark(double y1s, double y2s, double RSv, double Tolnew) {
-	static double Mag, Magold, Tolv;
-	static double LDastrox1, LDastrox2;
-	static double tc, lc, rc, cb, rb;
-	static int c, flag;
-	static double currerr, maxerr;
-	static annulus* first, * scan, * scan2;
-	static int nannold, totNPS;
-	static _sols_for_skiplist_curve* Images;
+	thread_local static double Mag, Magold, Tolv;
+	thread_local static double LDastrox1, LDastrox2;
+	thread_local static double tc, lc, rc, cb, rb;
+	thread_local static int c, flag;
+	thread_local static double currerr, maxerr;
+	thread_local static annulus* first, * scan, * scan2;
+	thread_local static int nannold, totNPS;
+	thread_local static _sols_for_skiplist_curve* Images;
 
 	Mag = -1.0;
 	Magold = 0.;
@@ -3271,9 +3271,9 @@ double VBMicrolensing::MultiMagDark(double y1s, double y2s, double RSv, double T
 
 
 double VBMicrolensing::MultiMag2(double y1s, double y2s, double rho) {
-	static double Mag, rho2, y2a, y1v, y2v;//, sms , dy1, dy2;
-	static int c;
-	static _sols_for_skiplist_curve* Images;
+	thread_local static double Mag, rho2, y2a, y1v, y2v;//, sms , dy1, dy2;
+	thread_local static int c;
+	thread_local static _sols_for_skiplist_curve* Images;
 
 	c = 0;
 
@@ -3372,8 +3372,8 @@ double VBMicrolensing::MultiMag2(double y1s, double y2s, double rho) {
 
 
 void VBMicrolensing::initroot() {
-	static complex fac, fac2, z, S2;
-	static double Jac;
+	thread_local static complex fac, fac2, z, S2;
+	thread_local static double Jac;
 
 	// Main image, should be positive and close to source
 	init[n] = y;
@@ -3408,9 +3408,9 @@ void VBMicrolensing::initroot() {
 }
 
 int VBMicrolensing::froot(complex zi) {
-	static complex z, zc, S1, S2, S2v, S3, zo, zo2, epso, epsbase, epsn, epsl, gradL, zl, fac, fac2, dz, dzo, TJold, TJnew, Lv, den;
-	static int iter3, iter4, ipseudo, flagmain, flag;
-	static double Lnew, Lold, fad, Jac, Jacold, prefac, epsbo;
+	thread_local static complex z, zc, S1, S2, S2v, S3, zo, zo2, epso, epsbase, epsn, epsl, gradL, zl, fac, fac2, dz, dzo, TJold, TJnew, Lv, den;
+	thread_local static int iter3, iter4, ipseudo, flagmain, flag;
+	thread_local static double Lnew, Lold, fad, Jac, Jacold, prefac, epsbo;
 
 	Lold = 100.;
 	epso = 1.e100;
@@ -3584,10 +3584,10 @@ int VBMicrolensing::froot(complex zi) {
 }
 
 bool VBMicrolensing::checkroot(_theta* theta) {
-	static double mn, fac;
-	static int imn;
-	static complex S3, z, S4;
-	static double fad;
+	thread_local static double mn, fac;
+	thread_local static int imn;
+	thread_local static complex S3, z, S4;
+	thread_local static double fad;
 	if ((iter2 < 9 && iter < maxiter) || L0f < 1.e-29) {
 		mn = 1.e100;
 		imn = 0;
@@ -3633,13 +3633,13 @@ bool VBMicrolensing::checkroot(_theta* theta) {
 
 
 _curve* VBMicrolensing::NewImages(_theta* theta) {
-	static _curve* Prov;
-	static int nminus, nplus;
-	static complex z, zc, dy, dz, J2, J3, Jalt, JJalt2, Jaltc, J1c2;
-	static complex S2, S2c, S3, S3c, vec, newseed0;
-	static double ob2, dJ2, cq, Jac, imul, phi;
-	static complex newseedtrial[6] = { complex(1,0.5),complex(1,-0.5), 0.5, 0.75, 2., 4., };
-	static int imass, iphi, nsafe;
+	thread_local static _curve* Prov;
+	thread_local static int nminus, nplus;
+	thread_local static complex z, zc, dy, dz, J2, J3, Jalt, JJalt2, Jaltc, J1c2;
+	thread_local static complex S2, S2c, S3, S3c, vec, newseed0;
+	thread_local static double ob2, dJ2, cq, Jac, imul, phi;
+	thread_local static complex newseedtrial[6] = { complex(1,0.5),complex(1,-0.5), 0.5, 0.75, 2., 4., };
+	thread_local static int imass, iphi, nsafe;
 
 	yc = conj(y);
 	initroot();
@@ -3765,9 +3765,9 @@ _curve* VBMicrolensing::NewImages(_theta* theta) {
 }
 
 void VBMicrolensing::initrootpoly() {
-	static double mrt;
-	static complex dev, dev2, zplus, shear, alpha0;
-	static int ir;
+	thread_local static double mrt;
+	thread_local static complex dev, dev2, zplus, shear, alpha0;
+	thread_local static int ir;
 	zplus = y;
 	ir = nroots - 1;
 	for (int i = 0; i < n; i++) {
@@ -3803,9 +3803,9 @@ void VBMicrolensing::initrootpoly() {
 }
 
 int VBMicrolensing::findimagepoly(int i) {
-	static complex z, zc, yc, LL, zo, delta, lambda;
-	static double dlmax = 1.0e-12, LLold, Jold, deltafac;
-	static int iter, iter2, success;
+	thread_local static complex z, zc, yc, LL, zo, delta, lambda;
+	thread_local static double dlmax = 1.0e-12, LLold, Jold, deltafac;
+	thread_local static int iter, iter2, success;
 	yc = conj(y);
 	z = zr[i];
 	zc = conj(z);
@@ -3846,15 +3846,15 @@ int VBMicrolensing::findimagepoly(int i) {
 	return success;
 }
 _curve* VBMicrolensing::NewImagespoly(_theta* theta) {
-	static complex  yc, z, zc, zo, delta, dy, dz, J2, J3, Jalt, Jaltc, JJalt2, LL, J1c2, dzita;
-	static double dlmax = 1.0e-12, dzmax = 1.e-10, dJ2, ob2, cq, Jold, LLold;
-	static int ngood, nplus, nminus, bad, isso, ncrit, igood, iter, iter2;
-	static double mi, tst, isgood;
-	static _curve* Prov;
-	static _point* scan, * prin, * fifth, * left, * right, * center;
+	thread_local static complex  yc, z, zc, zo, delta, dy, dz, J2, J3, Jalt, Jaltc, JJalt2, LL, J1c2, dzita;
+	thread_local static double dlmax = 1.0e-12, dzmax = 1.e-10, dJ2, ob2, cq, Jold, LLold;
+	thread_local static int ngood, nplus, nminus, bad, isso, ncrit, igood, iter, iter2;
+	thread_local static double mi, tst, isgood;
+	thread_local static _curve* Prov;
+	thread_local static _point* scan, * prin, * fifth, * left, * right, * center;
 
 #ifdef _PRINT_TIMES
-	static double tim0, tim1;
+	thread_local static double tim0, tim1;
 #endif
 
 	yc = conj(y);
@@ -3944,15 +3944,15 @@ _curve* VBMicrolensing::NewImagespoly(_theta* theta) {
 }
 
 _curve* VBMicrolensing::NewImagesmultipoly(_theta* theta) {
-	static complex  yc, z, zc, zo, delta, dy, dz, J2, J3, Jalt, Jaltc, JJalt2, LL, J1c2, dzita;
-	static double dlmax = 1.0e-12, dzmax = 1.e-10, dJ2, ob2, cq, Jold, LLold;
-	static int ngood, nplus, nminus, bad, isso, ncrit, igood, iter, iter2;
-	static double mi, tst, isgood;
-	static _curve* Prov;
-	static _point* scan, * prin, * fifth, * left, * right, * center;
+	thread_local static complex  yc, z, zc, zo, delta, dy, dz, J2, J3, Jalt, Jaltc, JJalt2, LL, J1c2, dzita;
+	thread_local static double dlmax = 1.0e-12, dzmax = 1.e-10, dJ2, ob2, cq, Jold, LLold;
+	thread_local static int ngood, nplus, nminus, bad, isso, ncrit, igood, iter, iter2;
+	thread_local static double mi, tst, isgood;
+	thread_local static _curve* Prov;
+	thread_local static _point* scan, * prin, * fifth, * left, * right, * center;
 
 #ifdef _PRINT_TIMES
-	static double tim0, tim1;
+	thread_local static double tim0, tim1;
 #endif
 
 	yc = conj(y);
@@ -4038,14 +4038,14 @@ _curve* VBMicrolensing::NewImagesmultipoly(_theta* theta) {
 }
 
 void VBMicrolensing::OrderMultipleImages(_sols_for_skiplist_curve* Sols, _curve* Newpts) {
-	static _point* scan, * scan2, * scan3, * isso[2];
-	static _skiplist_curve* scurve, * scurve2;
+	thread_local static _point* scan, * scan2, * scan3, * isso[2];
+	thread_local static _skiplist_curve* scurve, * scurve2;
 
-	static std::minstd_rand engine{ std::random_device{}() };
+	thread_local static std::minstd_rand engine{ std::random_device{}() };
 
-	static _theta* theta;
-	static double th, mi, cmp, cmp2, cmp_2, er3, dx2, avgx2, avgx1, avg2x1, pref, d2x2, dx1, d2x1, avgwedgex1, avgwedgex2, parab1, parab2;
-	static int nprec, npres, npres2, nfoll, issoc[2], ij;
+	thread_local static _theta* theta;
+	thread_local static double th, mi, cmp, cmp2, cmp_2, er3, dx2, avgx2, avgx1, avg2x1, pref, d2x2, dx1, d2x1, avgwedgex1, avgwedgex2, parab1, parab2;
+	thread_local static int nprec, npres, npres2, nfoll, issoc[2], ij;
 
 	nprec = nfoll = 0;
 	int new_and_append_Level = 0;
@@ -6274,8 +6274,8 @@ double VBMicrolensing::TripleLightCurveOrbital(double* pr, double t) {
 
 
 double VBMicrolensing::LDprofile(double r) {
-	static int ir;
-	static double rr, ret;
+	thread_local static int ir;
+	thread_local static double rr, ret;
 	switch (curLDprofile) {
 	case LDuser:
 		rr = r * npLD;
@@ -6299,8 +6299,8 @@ double VBMicrolensing::LDprofile(double r) {
 }
 
 double VBMicrolensing::rCLDprofile(double tc, annulus* left, annulus* right) {
-	static int ic;
-	static double rc, cb, lc, r2, cr2, cc, lb, rb;
+	thread_local static int ic;
+	thread_local static double rc, cb, lc, r2, cr2, cc, lb, rb;
 
 	switch (curLDprofile) {
 	case LDuser:
@@ -6762,17 +6762,17 @@ bool VBMicrolensing::AreCoordinatesSet() {
 }
 
 void VBMicrolensing::ComputeParallax(double t, double t0) {
-	static double dtflight = 0.0000993512; // = angle covered by Earth as light covers 1 au.
-	static double au_c = 0.005775518331436995; // au/c in days.
-	static double a0 = 1.00000261, adot = 0.00000562; // Ephemeris from JPL website 
-	static double e0 = 0.01671123, edot = -0.00004392;
-	static double inc0 = -0.00001531, incdot = -0.01294668;
-	static double L0 = 100.46457166, Ldot = 35999.37244981;
-	static double om0 = 102.93768193, omdot = 0.32327364;
-	static double deg = M_PI / 180;
-	static double a, e, inc, L, om, M, EE, dE, dM;
-	static double x1, y1, vx, vy, Ear[3], vEar[3];
-	static double r, sp, ty, Spit, dLtof;
+	thread_local static double dtflight = 0.0000993512; // = angle covered by Earth as light covers 1 au.
+	thread_local static double au_c = 0.005775518331436995; // au/c in days.
+	thread_local static double a0 = 1.00000261, adot = 0.00000562; // Ephemeris from JPL website 
+	thread_local static double e0 = 0.01671123, edot = -0.00004392;
+	thread_local static double inc0 = -0.00001531, incdot = -0.01294668;
+	thread_local static double L0 = 100.46457166, Ldot = 35999.37244981;
+	thread_local static double om0 = 102.93768193, omdot = 0.32327364;
+	thread_local static double deg = M_PI / 180;
+	thread_local static double a, e, inc, L, om, M, EE, dE, dM;
+	thread_local static double x1, y1, vx, vy, Ear[3], vEar[3];
+	thread_local static double r, sp, ty, Spit, dLtof;
 	int c = 0, ic;
 
 	if (!coordinates_set) {
@@ -7826,8 +7826,8 @@ void VBMicrolensing::change_n_mp(int nn) {
 }
 
 void VBMicrolensing::polycritcoefficients(complex eiphi) {
-	static int dg;
-	static complex pbin[3];
+	thread_local static int dg;
+	thread_local static complex pbin[3];
 
 	for (int i = 0; i < n; i++) {
 		pmza2[i][0] = m[i];
@@ -7865,8 +7865,8 @@ void VBMicrolensing::polycritcoefficients(complex eiphi) {
 
 void VBMicrolensing::polycoefficients() {
 
-	static int dg;
-	static complex pbin[2], lam;
+	thread_local static int dg;
+	thread_local static complex pbin[2], lam;
 
 
 	for (int k = 0; k < n; k++) {
@@ -7925,8 +7925,8 @@ void VBMicrolensing::polycoefficients() {
 
 void VBMicrolensing::polycoefficients_multipoly() {
 
-	static int dg;
-	static complex pbin[2], lam;
+	thread_local static int dg;
+	thread_local static complex pbin[2], lam;
 
 	for (int l = 0; l < n; l++) {
 		for (int i = 0; i < nnm1 + 1; i++) {
@@ -8025,12 +8025,12 @@ void VBMicrolensing::cmplx_roots_gen(complex* roots, complex* poly, int degree, 
 	//very rough idea where some of the roots can be.
 	//
 
-	static complex poly2[MAXM];
-	static int i, j, n, iter;
-	static bool success;
-	static complex coef, prev;
-	static int ismallest;
-	static double abssmall;
+	thread_local static complex poly2[MAXM];
+	thread_local static int i, j, n, iter;
+	thread_local static bool success;
+	thread_local static complex coef, prev;
+	thread_local static int ismallest;
+	thread_local static double abssmall;
 
 	if (!use_roots_as_starting_points) {
 		for (int jj = 0; jj < degree; jj++) {
@@ -8098,14 +8098,14 @@ void VBMicrolensing::cmplx_roots_gen(complex* roots, complex* poly, int degree, 
 
 void VBMicrolensing::cmplx_roots_multigen(complex* roots, complex** poly, int degree, bool polish_roots_after, bool use_roots_as_starting_points) {
 
-	static complex poly2[MAXM];
-	static int l, j, i, k, ind, degreenew, croots, m;
-	static int attempts;
-	static double dif0, dif0_lin, br;
-	static bool success;
-	static complex coef, prev, przr;
+	thread_local static complex poly2[MAXM];
+	thread_local static int l, j, i, k, ind, degreenew, croots, m;
+	thread_local static int attempts;
+	thread_local static double dif0, dif0_lin, br;
+	thread_local static bool success;
+	thread_local static complex coef, prev, przr;
 
-	static const double safety_levels[3] = { 0.001, 0.01, 0.1 };
+	thread_local static const double safety_levels[3] = { 0.001, 0.01, 0.1 };
 
 	auto total_roots_prev = [&]() -> int {
 		int tot = 0;
@@ -8361,7 +8361,7 @@ void VBMicrolensing::cmplx_roots_multigen(complex* roots, complex** poly, int de
 }
 
 void VBMicrolensing::solve_quadratic_eq(complex& x0, complex& x1, complex* poly) {
-	static complex a, b, c, b2, delta;
+	thread_local static complex a, b, c, b2, delta;
 	a = poly[2];
 	b = poly[1];
 	c = poly[0];
@@ -8390,16 +8390,16 @@ void VBMicrolensing::solve_cubic_eq(complex& x0, complex& x1, complex& x2, compl
 	// poly is an array of polynomial cooefs, length = degree+1, poly[0] is constant
 	//	0				1				2			3
 	//poly[0] x^0 + poly[1] x^1 + poly[2] x^2 + poly[3] x^3
-	static complex zeta = complex(-0.5, 0.8660254037844386);
-	static complex zeta2 = complex(-0.5, -0.8660254037844386);
-	static double third = 0.3333333333333333;
-	static complex s0, s1, s2;
-	static complex E1; //x0+x1+x2
-	static complex E2; //x0*x1+x1*x2+x2*x0
-	static complex E3; //x0*x1*x2
-	static complex A, B, a_1, E12, delta, A2;
+	thread_local static complex zeta = complex(-0.5, 0.8660254037844386);
+	thread_local static complex zeta2 = complex(-0.5, -0.8660254037844386);
+	thread_local static double third = 0.3333333333333333;
+	thread_local static complex s0, s1, s2;
+	thread_local static complex E1; //x0+x1+x2
+	thread_local static complex E2; //x0*x1+x1*x2+x2*x0
+	thread_local static complex E3; //x0*x1*x2
+	thread_local static complex A, B, a_1, E12, delta, A2;
 
-	static complex val, x;
+	thread_local static complex val, x;
 	a_1 = 1 / poly[3];
 	E1 = -poly[2] * a_1;
 	E2 = poly[1] * a_1;
@@ -8467,25 +8467,25 @@ void VBMicrolensing::cmplx_laguerre(complex* poly, int degree, complex* root, in
 	//For a summary of the method go to :
 	//http://en.wikipedia.org/wiki/Laguerre's_method
 	//
-	static int FRAC_JUMP_EVERY = 10;
+	thread_local static int FRAC_JUMP_EVERY = 10;
 	const int FRAC_JUMP_LEN = 10;
-	static double FRAC_JUMPS[FRAC_JUMP_LEN] = { 0.64109297,
+	thread_local static double FRAC_JUMPS[FRAC_JUMP_LEN] = { 0.64109297,
 		0.91577881, 0.25921289, 0.50487203,
 		0.08177045, 0.13653241, 0.306162,
 		0.37794326, 0.04618805, 0.75132137 }; // some random numbers
 
-	static double faq; //jump length
-	static double FRAC_ERR = 2.0e-15; //Fractional Error for double precision
-	static complex p, dp, d2p_half; //value of polynomial, 1st derivative, and 2nd derivative
-	static int i, j, k;
-	static bool good_to_go;
-	static complex denom, denom_sqrt, dx, newroot;
-	static double ek, absroot, abs2p;
-	static complex fac_newton, fac_extra, F_half, c_one_nth;
-	static double one_nth, n_1_nth, two_n_div_n_1;
-	static complex c_one = complex(1, 0);
-	static complex zero = complex(0, 0);
-	static double stopping_crit2;
+	thread_local static double faq; //jump length
+	thread_local static double FRAC_ERR = 2.0e-15; //Fractional Error for double precision
+	thread_local static complex p, dp, d2p_half; //value of polynomial, 1st derivative, and 2nd derivative
+	thread_local static int i, j, k;
+	thread_local static bool good_to_go;
+	thread_local static complex denom, denom_sqrt, dx, newroot;
+	thread_local static double ek, absroot, abs2p;
+	thread_local static complex fac_newton, fac_extra, F_half, c_one_nth;
+	thread_local static double one_nth, n_1_nth, two_n_div_n_1;
+	thread_local static complex c_one = complex(1, 0);
+	thread_local static complex zero = complex(0, 0);
+	thread_local static double stopping_crit2;
 
 	//--------------------------------------------------------------------------------------------
 
@@ -8616,19 +8616,19 @@ void VBMicrolensing::cmplx_newton_spec(complex* poly, int degree, complex* root,
 	//For a summary of the method go to: 
 	//http://en.wikipedia.org/wiki/Newton's_method
 
-	static int FRAC_JUMP_EVERY = 10;
+	thread_local static int FRAC_JUMP_EVERY = 10;
 	const int FRAC_JUMP_LEN = 10;
-	static double FRAC_JUMPS[FRAC_JUMP_LEN] = { 0.64109297, 0.91577881, 0.25921289, 0.50487203, 0.08177045, 0.13653241, 0.306162, 0.37794326, 0.04618805, 0.75132137 }; //some random numbers
-	static double faq; //jump length
-	static double FRAC_ERR = 2e-15;
-	static complex p; //value of polynomial
-	static complex dp; //value of 1st derivative
-	static int i, k;
-	static bool good_to_go;
-	static complex dx, newroot;
-	static double ek, absroot, abs2p;
-	static complex zero = complex(0, 0);
-	static double stopping_crit2;
+	thread_local static double FRAC_JUMPS[FRAC_JUMP_LEN] = { 0.64109297, 0.91577881, 0.25921289, 0.50487203, 0.08177045, 0.13653241, 0.306162, 0.37794326, 0.04618805, 0.75132137 }; //some random numbers
+	thread_local static double faq; //jump length
+	thread_local static double FRAC_ERR = 2e-15;
+	thread_local static complex p; //value of polynomial
+	thread_local static complex dp; //value of 1st derivative
+	thread_local static int i, k;
+	thread_local static bool good_to_go;
+	thread_local static complex dx, newroot;
+	thread_local static double ek, absroot, abs2p;
+	thread_local static complex zero = complex(0, 0);
+	thread_local static double stopping_crit2;
 
 	iter = 0;
 	success = true;
@@ -8768,27 +8768,27 @@ void VBMicrolensing::cmplx_laguerre2newton(complex* poly, int degree, complex* r
 
 	//For a summary of the method see the paper: Skowron & Gould (2012)
 
-	static int FRAC_JUMP_EVERY = 10;
+	thread_local static int FRAC_JUMP_EVERY = 10;
 	const int FRAC_JUMP_LEN = 10;
-	static double FRAC_JUMPS[FRAC_JUMP_LEN] = { 0.64109297, 0.91577881, 0.25921289, 0.50487203, 0.08177045, 0.13653241, 0.306162, 0.37794326, 0.04618805, 0.75132137 }; //some random numbers
+	thread_local static double FRAC_JUMPS[FRAC_JUMP_LEN] = { 0.64109297, 0.91577881, 0.25921289, 0.50487203, 0.08177045, 0.13653241, 0.306162, 0.37794326, 0.04618805, 0.75132137 }; //some random numbers
 
-	static double faq; //jump length
-	static double FRAC_ERR = 2.0e-15;
+	thread_local static double faq; //jump length
+	thread_local static double FRAC_ERR = 2.0e-15;
 
-	static complex p; //value of polynomial
-	static complex dp; //value of 1st derivative
-	static complex d2p_half; //value of 2nd derivative
-	static int i, j, k;
-	static bool good_to_go;
+	thread_local static complex p; //value of polynomial
+	thread_local static complex dp; //value of 1st derivative
+	thread_local static complex d2p_half; //value of 2nd derivative
+	thread_local static int i, j, k;
+	thread_local static bool good_to_go;
 	//complex G, H, G2;
-	static complex denom, denom_sqrt, dx, newroot;
-	static double ek, absroot, abs2p, abs2_F_half;
-	static complex fac_netwon, fac_extra, F_half, c_one_nth;
-	static double one_nth, n_1_nth, two_n_div_n_1;
-	static int mode;
-	static complex c_one = complex(1, 0);
-	static complex zero = complex(0, 0);
-	static double stopping_crit2;
+	thread_local static complex denom, denom_sqrt, dx, newroot;
+	thread_local static double ek, absroot, abs2p, abs2_F_half;
+	thread_local static complex fac_netwon, fac_extra, F_half, c_one_nth;
+	thread_local static double one_nth, n_1_nth, two_n_div_n_1;
+	thread_local static int mode;
+	thread_local static complex c_one = complex(1, 0);
+	thread_local static complex zero = complex(0, 0);
+	thread_local static double stopping_crit2;
 
 	iter = 0;
 	success = true;
@@ -9097,9 +9097,9 @@ void VBMicrolensing::cmplx_laguerre2newton(complex* poly, int degree, complex* r
 
 double VBMicrolensing::BinaryMag0_shear(double a1, double q1, double y1v, double y2v, double K1, double G1, double Gi, _sols** Images) {
 	// by Lawrence Pierson (https://github.com/alpv95)
-	static complex a, q, m1, m2, y, yc, mdiff, mtot, K, G;
-	static double av = -1.0, qv = -1.0, Kv = -1.0, Gv = -1.0, Giv = -1.0, cq;
-	static complex  coefs[28], d1, d2, dy, dJ, dz;
+	thread_local static complex a, q, m1, m2, y, yc, mdiff, mtot, K, G;
+	thread_local static double av = -1.0, qv = -1.0, Kv = -1.0, Gv = -1.0, Giv = -1.0, cq;
+	thread_local static complex  coefs[28], d1, d2, dy, dJ, dz;
 	double Mag = -1.0;
 	_theta* stheta;
 	_curve* Prov, * Prov2;
@@ -9180,16 +9180,16 @@ double VBMicrolensing::BinaryMag0_shear(double a1, double q1, double y1v, double
 
 _curve* VBMicrolensing::NewImages_shear(complex yi, complex* coefs, _theta* theta) {
 	// by Lawrence Pierson (https://github.com/alpv95)
-	static complex  y, yc, z, zc, Gc, J1, J1c, dy, dz, dJ, J2, J3, dza, za2, zb2, zaltc, Jalt, Jaltc, JJalt2;
-	static complex zr[9] = { 0.,0.,0.,0.,0.,0.,0.,0.,0. };
-	static double dzmax, dlmax = 1.0e-6, good[9], dJ2, ob2, cq;
-	static int worst1, worst2, worst3, bad, f1;
-	static double av = 0.0, m1v = 0.0, disim, disisso;
-	static _curve* Prov;
-	static _point* scan, * prin, * fifth, * left, * right, * center;
+	thread_local static complex  y, yc, z, zc, Gc, J1, J1c, dy, dz, dJ, J2, J3, dza, za2, zb2, zaltc, Jalt, Jaltc, JJalt2;
+	thread_local static complex zr[9] = { 0.,0.,0.,0.,0.,0.,0.,0.,0. };
+	thread_local static double dzmax, dlmax = 1.0e-6, good[9], dJ2, ob2, cq;
+	thread_local static int worst1, worst2, worst3, bad, f1;
+	thread_local static double av = 0.0, m1v = 0.0, disim, disisso;
+	thread_local static _curve* Prov;
+	thread_local static _point* scan, * prin, * fifth, * left, * right, * center;
 
 #ifdef _PRINT_TIMES
-	static double tim0, tim1;
+	thread_local static double tim0, tim1;
 #endif
 
 	y = yi + coefs[11]; // Coordinate transformation to centre of mass frame

@@ -612,7 +612,7 @@ inline _point::_point(double x, double y, _theta* theta1) {
 }
 
 inline double _point::operator-(_point p2) {
-	static double dx1, dx2;
+	thread_local static double dx1, dx2;
 	dx1 = x1 - p2.x1;
 	dx2 = x2 - p2.x2;
 	return dx1 * dx1 + dx2 * dx2;
