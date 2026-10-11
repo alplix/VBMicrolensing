@@ -1,4 +1,7 @@
 // VBMicrolensing v5.6 (2026)
+// bitboinc patch: every function-local static in this file is thread_local, so one VBMicrolensing instance per thread is
+// safe. Code that runs several threads (kampylos_cpu_patch_pool.h) checks this macro and stays single-threaded without it.
+#define VBM_THREAD_SAFE 1
 //
 // This code has been developed by Valerio Bozza (University of Salerno) and collaborators.
 // Check the repository at https://github.com/valboz/VBMicrolensing
